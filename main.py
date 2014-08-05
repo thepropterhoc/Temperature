@@ -11,9 +11,15 @@ def print_data(data):
 		'source_addr_long' : data['source_addr_long'].encode('hex'),
 		'samples' : data['samples']
 	}
-	print requests.post('http://127.0.0.1:5000/api/update', data=json.dumps(frame), headers=headers)
+	try:
+		response = requests.post('http://127.0.0.1:5000/api/update', data=json.dumps(frame), headers=headers)
+		if not response.status_code == 200:
+			print 'Unusual response: ' + response
+	except Exception, e:
+		print 'Server unavailable'
 	
 xbee = ZigBee(serial_port, callback=print_data)
+
 while True:
 	try:
 		time.sleep(0.02)
